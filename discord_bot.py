@@ -24,6 +24,9 @@ TIMEZONE = pytz.timezone('Asia/Seoul')
 # 봇 설정
 intents = discord.Intents.default()
 intents.message_content = True
+intents.presences = False  # 불필요한 Intent 비활성화
+intents.typing = False
+intents.members = False
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 # 크롤러 인스턴스
@@ -263,10 +266,32 @@ def main():
         print("⚠️  CHANNEL_ID가 설정되지 않았습니다.")
         print("⚠️  자동 알림이 작동하지 않습니다.")
     
-    try:
-        bot.run(DISCORD_TOKEN)
-    except Exception as e:
-        print(f"❌ 봇 실행 실패: {e}")
+    # 재시도 로직
+    max_retries = 5
+    retry_delay = 10  # 초
+    
+    for attempt in range(max_retries):
+        try:
+            print(f"🔄 봇 시작 시도 중... ({attempt + 1}/{max_retries})")
+            bot.run(DISCORD_TOKEN)
+            break  # 성공하면 루프 탈출
+        except Exception as e:
+            error_msg = str(e)
+            print(f"❌ 봇 실행 실패 (시도 {attempt + 1}/{max_retries}): {error_msg}")
+            
+            # Rate limit 에러인 경우
+            if "429" in error_msg or "rate limit" in error_msg.lower():
+                if attempt < max_retries - 1:
+                    import time
+                    wait_time = retry_delay * (attempt + 1)  # 지수 백오프
+                    print(f"⏳ {wait_time}초 후 재시도합니다...")
+                    time.sleep(wait_time)
+                else:
+                    print("❌ 최대 재시도 횟수를 초과했습니다.")
+                    print("💡 Render 서비스를 재시작하거나 몇 분 후 다시 시도해주세요.")
+            else:
+                # 다른 에러는 즉시 종료
+                break
 
 
 if __name__ == "__main__":
