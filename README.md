@@ -1,6 +1,6 @@
 # 📊 공모주 정보 Discord 봇
 
-피너츠(finuts.co.kr) API를 사용하여 공모주 정보를 자동으로 Discord 채널에 알려주는 봇입니다.
+공모주 정보를 자동으로 Discord 채널에 알려주는 봇입니다.
 
 ## ✨ 주요 기능
 
@@ -124,7 +124,7 @@ CHANNEL_ID = your_channel_id_here
 ```
 ipo_bot/
 ├── discord_bot.py          # Discord 봇 메인 파일
-├── ipo_crawler.py          # 공모주 크롤러
+├── ipo_crawler.py          # 데이터 수집 모듈
 ├── requirements.txt        # 의존성 패키지
 ├── .env                    # 환경 변수 (git에 포함 안 됨)
 ├── .env.example           # 환경 변수 예시
@@ -139,14 +139,6 @@ ipo_bot/
 - requests - HTTP 요청
 - python-dotenv - 환경 변수 관리
 - pytz - 시간대 처리
-
-## 📝 라이선스
-
-MIT License
-
-## 🤝 기여
-
-이슈 및 PR은 언제나 환영합니다!
 
 ## ⚠️ 주의사항
 
