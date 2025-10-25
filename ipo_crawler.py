@@ -4,7 +4,7 @@
 https://www.finuts.co.kr 공모주 API를 사용하여 특정 날짜의 공모주 정보를 수집합니다.
 """
 
-import requests
+import cloudscraper
 import json
 from typing import List, Dict, Optional
 from datetime import datetime
@@ -25,6 +25,14 @@ class FinutsIPOCrawler:
             'Origin': 'https://www.finuts.co.kr'
         }
         self.data_cache = None
+        # cloudscraper 세션 생성
+        self.scraper = cloudscraper.create_scraper(
+            browser={
+                'browser': 'chrome',
+                'platform': 'windows',
+                'mobile': False
+            }
+        )
     
     def fetch_all_ipo_data(self) -> Optional[List[Dict]]:
         """
@@ -34,7 +42,7 @@ class FinutsIPOCrawler:
             공모주 데이터 리스트 또는 None (실패 시)
         """
         try:
-            response = requests.post(
+            response = self.scraper.post(
                 self.api_url,
                 data={},
                 headers=self.headers,
